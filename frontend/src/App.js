@@ -6,6 +6,7 @@ function Simulator() {
   const [mass, setMass] = useState("");
   const [velocity, setVelocity] = useState("");
   const [result, setResult] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const handleSimulate = async () => {
     if (!mass || !velocity) {
@@ -13,17 +14,33 @@ function Simulator() {
       return;
     }
 
+    setLoading(true);
+    setResult(null);
+
     try {
-      const response = await fetch("http://127.0.0.1:5001/simulate", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ mass, velocity }),
-      });
+      const response = await fetch(
+        "https://impact-simulator-backend.onrender.com/simulate",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ mass, velocity }),
+        }
+      );
 
       const data = await response.json();
-      setResult(data);
+
+      if (response.ok) {
+        setResult(data);
+      } else {
+        alert(data.error || "Simulation failed");
+      }
     } catch (error) {
       console.error("Error fetching data:", error);
+      alert("Failed to connect to backend. Check console for details.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -53,7 +70,7 @@ function Simulator() {
             onClick={handleSimulate}
             className="mt-4 bg-[#00ffff] text-black font-bold py-2 px-4 rounded-lg hover:bg-[#00cccc] transition duration-200"
           >
-            Simulate Impact
+            {loading ? "Simulating..." : "Simulate Impact"}
           </button>
         </div>
 
@@ -81,8 +98,6 @@ function App() {
           <Link to="/">
             <img src="/EffortLogo.png" alt="Logo" className="w-20 h-20" />
           </Link>
-
-
         </div>
         <div>
           <Link
