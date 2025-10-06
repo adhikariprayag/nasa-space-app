@@ -99,14 +99,7 @@ function App() {
             <img src="/EffortLogo.png" alt="Logo" className="w-20 h-20" />
           </Link>
         </div>
-        <div>
-          <Link
-            to="/references"
-            className="text-white hover:text-[#00ffff] font-medium transition duration-200"
-          >
-            References
-          </Link>
-        </div>
+
       </nav>
 
       {/* Page Routes */}
